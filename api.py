@@ -4,14 +4,16 @@ from mangum import Mangum
 from sqlalchemy import create_engine, text
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+from urllib.parse import unquote
 
-origins = ["http://localhost:8000", "http://localhost:3000", "http://127.0.0.1:5500"]
+
+origins = ["*"]
 app = FastAPI(title="INFYNITE POLLING DOCS")
 handler = Mangum(app)
 
 app.add_middleware(CORSMiddleware, allow_origins=origins)
 
-headers = {"Access-Control-Allow-Origin": "*"}
+# headers = {"Access-Control-Allow-Origin": "*"}
 
 
 # (REQUEST BODY) MODEL CONFIGURATION
@@ -22,7 +24,7 @@ class poll_body(BaseModel):
 
 
 engine = create_engine(
-    "mysql+pymysql://{username}:{password}@{DB_endpoint}/{db_name")
+    "mysql+pymysql://admin:devrishi0512!!!!@testing-polling.cs8nrehidydt.ap-south-1.rds.amazonaws.com/polling")
 connection = engine.connect()
 
 
@@ -92,8 +94,8 @@ async def statistics(question_id: int):
 
 @app.get('/addQuestion/{question}/{opt1}/{opt2}')
 async def addQuestion(question: str, opt1: str, opt2: str):
-    command = f'INSERT INTO poll_questions (question, option1, option2) VALUES ("{question}", "{opt1}", "{opt2}")'
+    command = f'INSERT INTO poll_questions (question, option1, option2) VALUES ("{unquote(question)}", "{unquote(opt1)}", "{unquote(opt2)}")'
     add_command = connection.execute(text(command))
     connection.commit()
-    return JSONResponse(content={"message": "question added"}, status_code=201, headers=headers)
+    return JSONResponse(content={"message": "question added"}, status_code=201)
 
