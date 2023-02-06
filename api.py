@@ -24,7 +24,7 @@ class poll_body(BaseModel):
 
 
 engine = create_engine(
-    "mysql+pymysql://admin:devrishi0512!!!!@testing-polling.cs8nrehidydt.ap-south-1.rds.amazonaws.com/polling")
+    "mysql+pymysql://{username}:{password}@{rds_url_endpoint}/{database_name}")
 connection = engine.connect()
 
 
